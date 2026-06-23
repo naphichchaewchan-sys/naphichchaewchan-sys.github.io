@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Countdown</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f5f4f0;
+    }
+
+    .cd-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .cd-title {
+      font-size: 13px;
+      font-weight: 400;
+      color: #888;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .cd-bar {
+      width: 200px;
+      height: 3px;
+      background: #ddd;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .cd-bar-fill {
+      height: 100%;
+      background: #888;
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+
+    .cd-grid {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .cd-box {
+      background: #fff;
+      border: 0.5px solid #e0ddd5;
+      border-radius: 12px;
+      width: 130px;
+      padding: 1.25rem 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cd-number {
+      font-size: 44px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .cd-label {
+      font-size: 12px;
+      color: #888;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+
+    .cd-sep {
+      font-size: 36px;
+      font-weight: 300;
+      color: #aaa;
+      align-self: center;
+      padding-bottom: 1.5rem;
+      line-height: 1;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    .cd-footer {
+      font-size: 12px;
+      color: #bbb;
+      letter-spacing: 0.04em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a18; }
+      .cd-box { background: #232320; border-color: #333; }
+      .cd-number { color: #f0ede6; }
+      .cd-bar { background: #333; }
+      .cd-bar-fill { background: #888; }
+    }
+
+    @media (max-width: 600px) {
+      .cd-box { width: 80px; padding: 1rem 0.5rem 0.75rem; }
+      .cd-number { font-size: 32px; }
+      .cd-sep { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cd-wrap">
+  <p class="cd-title">นับถอยหลังสู่</p>
+
+  <div class="cd-bar">
+    <div class="cd-bar-fill" id="bar"></div>
+  </div>
+
+  <div class="cd-grid" id="grid">
+    <div class="cd-box">
+      <span class="cd-number" id="d">--</span>
+      <span class="cd-label">วัน</span>
+    </div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box">
+      <span class="cd-number" id="h">--</span>
+      <span class="cd-label">ชั่วโมง</span>
+    </div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box">
+      <span class="cd-number" id="m">--</span>
+      <span class="cd-label">นาที</span>
+    </div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box">
+      <span class="cd-number" id="s">--</span>
+      <span class="cd-label">วินาที</span>
+    </div>
+  </div>
+
+  <p class="cd-footer">31 มีนาคม 2571</p>
+</div>
+
+<script>
+  const target = new Date("2028-03-31T00:00:00");
+  const start  = new Date("2026-06-23T00:00:00");
+  const totalMs = target - start;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now  = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('grid').innerHTML = '<p style="font-size:28px;font-weight:500;">จบแล้ว 🎉</p>';
+      document.getElementById('bar').style.width = '100%';
+      return;
+    }
+
+    document.getElementById('d').textContent = Math.floor(diff / 864e5);
+    document.getElementById('h').textContent = pad(Math.floor((diff / 36e5) % 24));
+    document.getElementById('m').textContent = pad(Math.floor((diff / 6e4) % 60));
+    document.getElementById('s').textContent = pad(Math.floor((diff / 1e3) % 60));
+
+    const pct = ((totalMs - diff) / totalMs * 100).toFixed(2);
+    document.getElementById('bar').style.width = pct + '%';
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
